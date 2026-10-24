@@ -1,0 +1,14 @@
+{
+    "name": "Larje.Core.Defines.Editor",
+    "rootNamespace": "Larje.Core.Editor.Defines",
+    "references": [],
+    "includePlatforms": ["Editor"],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
