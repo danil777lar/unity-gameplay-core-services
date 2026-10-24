@@ -11,6 +11,7 @@ namespace Larje.Core.Saves
         event Action Loaded;
 
         T Get<T>() where T : class, new();
+        void Reload(bool loadGame = true);
         void SaveGame(string slot = null);
         bool LoadGame(string slot = null);
         void NewGame(string slot = null);

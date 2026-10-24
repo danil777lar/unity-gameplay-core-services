@@ -33,18 +33,23 @@ namespace Larje.Core.Saves
 
         public void Initialize()
         {
+            Reload(_config.LoadGameOnInitialize);
+            Application.quitting += OnQuitting;
+            Application.focusChanged += OnFocusChanged;
+        }
+
+        public void Reload(bool loadGame = true)
+        {
+            _system.Clear();
             if (_storage.TryRead(SYSTEM_FILE, out string systemJson))
             {
                 _system.Deserialize(Decode(systemJson));
             }
 
-            if (_config.LoadGameOnInitialize && !LoadGame(_currentSlot))
+            if (loadGame && !LoadGame(_currentSlot))
             {
                 NewGame(_currentSlot);
             }
-
-            Application.quitting += OnQuitting;
-            Application.focusChanged += OnFocusChanged;
         }
 
         public void Dispose()

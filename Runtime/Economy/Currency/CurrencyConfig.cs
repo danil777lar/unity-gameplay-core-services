@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Larje.Core.Economy
 {
     [CreateAssetMenu(fileName = "CurrencyConfig", menuName = "Larje/Core/Economy/Currency Config")]
-    public sealed class CurrencyConfig : ScriptableObject
+    public sealed class CurrencyConfig : ScriptableObject, IConfigValidatable
     {
         [Header("Placements")]
         [SerializeField] private CurrencyPlacementId defaultPlacement;
@@ -49,6 +49,22 @@ namespace Larje.Core.Economy
             public void Validate()
             {
                 inspectorName = currency != null ? currency.name : "None";
+            }
+        }
+
+        public void Validate(List<string> problems)
+        {
+            if (defaultPlacement == null)
+            {
+                problems.Add("Default placement is not set");
+            }
+
+            foreach (CurrencyOptions options in currencies)
+            {
+                if (options.Currency == null)
+                {
+                    problems.Add("Currency entry has no CurrencyId");
+                }
             }
         }
     }

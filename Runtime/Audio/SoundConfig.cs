@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Larje.Core.Audio
 {
     [CreateAssetMenu(fileName = "SoundConfig", menuName = "Larje/Core/Audio/Sound Config")]
-    public sealed class SoundConfig : ScriptableObject
+    public sealed class SoundConfig : ScriptableObject, IConfigValidatable
     {
         [Header("Channels")]
         [SerializeField] private SoundChannelId defaultChannel;
@@ -29,6 +29,27 @@ namespace Larje.Core.Audio
         private void OnValidate()
         {
             sounds.ForEach(x => x.Validate());
+        }
+
+        public void Validate(List<string> problems)
+        {
+            HashSet<SoundId> ids = new HashSet<SoundId>();
+            foreach (SoundEntry entry in sounds)
+            {
+                if (entry.Id == null)
+                {
+                    problems.Add("Sound entry has no SoundId");
+                }
+                else if (!ids.Add(entry.Id))
+                {
+                    problems.Add($"Sound '{entry.Id.name}' is configured several times");
+                }
+
+                if (entry.PickClip() == null)
+                {
+                    problems.Add($"Sound '{(entry.Id != null ? entry.Id.name : "None")}' has no clips");
+                }
+            }
         }
     }
 }

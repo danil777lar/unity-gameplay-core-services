@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Larje.Core.Locations
 {
     [CreateAssetMenu(fileName = "LocationsConfig", menuName = "Larje/Core/Locations/Locations Config")]
-    public sealed class LocationsConfig : ScriptableObject
+    public sealed class LocationsConfig : ScriptableObject, IConfigValidatable
     {
         [Header("Defaults")]
         [SerializeField] private LocationId defaultLocation;
@@ -36,6 +36,27 @@ namespace Larje.Core.Locations
         private void OnValidate()
         {
             locations.ForEach(x => x.Validate());
+        }
+
+        public void Validate(List<string> problems)
+        {
+            if (defaultLocation == null || Find(defaultLocation) == null)
+            {
+                problems.Add("Default location is missing or not configured");
+            }
+
+            foreach (LocationInfo location in locations)
+            {
+                if (location.Id == null)
+                {
+                    problems.Add("Location entry has no LocationId");
+                }
+
+                if (string.IsNullOrEmpty(location.SceneName))
+                {
+                    problems.Add($"Location '{(location.Id != null ? location.Id.name : "None")}' has no scene");
+                }
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 namespace Larje.Core.Input
 {
     [CreateAssetMenu(fileName = "InputConfig", menuName = "Larje/Core/Input/Input Config")]
-    public sealed class InputConfig : ScriptableObject
+    public sealed class InputConfig : ScriptableObject, IConfigValidatable
     {
         [Header("Asset")]
         [SerializeField] private InputActionAsset actions;
@@ -40,6 +40,23 @@ namespace Larje.Core.Input
         {
             public string Name;
             public bool EnabledByDefault = true;
+        }
+
+        public void Validate(List<string> problems)
+        {
+            if (actions == null)
+            {
+                problems.Add("InputActionAsset is not assigned");
+                return;
+            }
+
+            foreach (MapSettings map in maps)
+            {
+                if (actions.FindActionMap(map.Name) == null)
+                {
+                    problems.Add($"Action map '{map.Name}' does not exist in {actions.name}");
+                }
+            }
         }
     }
 }

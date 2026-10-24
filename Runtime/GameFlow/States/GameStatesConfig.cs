@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Larje.Core.GameFlow
 {
     [CreateAssetMenu(fileName = "GameStatesConfig", menuName = "Larje/Core/Game Flow/Game States Config")]
-    public sealed class GameStatesConfig : ScriptableObject
+    public sealed class GameStatesConfig : ScriptableObject, IConfigValidatable
     {
         [Header("Flow")]
         [SerializeField] private GameStateId splash;
@@ -50,6 +50,19 @@ namespace Larje.Core.GameFlow
                     {
                         yield return state;
                     }
+                }
+            }
+        }
+
+        public void Validate(List<string> problems)
+        {
+            GameStateId[] required = { splash, loading, transition, menu, playing, paused, win, fail };
+            string[] names = { "Splash", "Loading", "Transition", "Menu", "Playing", "Paused", "Win", "Fail" };
+            for (int i = 0; i < required.Length; i++)
+            {
+                if (required[i] == null)
+                {
+                    problems.Add($"Game state '{names[i]}' is not assigned");
                 }
             }
         }

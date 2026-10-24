@@ -11,7 +11,14 @@ namespace Larje.Core.Debugging
 
         private readonly List<DebugCommandInfo> _commands = new List<DebugCommandInfo>();
 
+        public static IDebugCommandRegistry Current { get; private set; }
+
         public IReadOnlyList<DebugCommandInfo> Commands => _commands;
+
+        public DebugCommandRegistry()
+        {
+            Current = this;
+        }
 
         public void Register(object provider)
         {
