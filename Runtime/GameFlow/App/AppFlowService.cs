@@ -15,6 +15,7 @@ namespace Larje.Core.GameFlow
         private readonly CancellationTokenSource _lifetime = new CancellationTokenSource();
 
         public float SplashProgress => _splashProgress;
+        public string MenuScene => _config.MenuScene;
 
         public AppFlowService(AppFlowConfig config, IGameStateService gameState, ISceneLoader sceneLoader)
         {

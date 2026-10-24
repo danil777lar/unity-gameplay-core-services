@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "displayName": "Larje Core",
   "description": "Core gameplay services and tools: saves, events, game state, scenes and levels, UI, audio, input, economy, localization, debug console. Plain C# services, UniTask-based, optional Zenject installers and Unity AI MCP tools.",
-  "unity": "6000.0",
+  "unity": "6000.3",
   "author": {
     "name": "Danil Kolbasenko",
     "email": "danil777lar@gmail.com",

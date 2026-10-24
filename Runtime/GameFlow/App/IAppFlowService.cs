@@ -6,6 +6,7 @@ namespace Larje.Core.GameFlow
     public interface IAppFlowService
     {
         float SplashProgress { get; }
+        string MenuScene { get; }
 
         UniTask ShowSplashAsync(CancellationToken cancellationToken = default);
         void ShowMenu();
