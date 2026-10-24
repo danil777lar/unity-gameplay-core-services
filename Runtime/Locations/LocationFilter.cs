@@ -8,7 +8,7 @@ namespace Larje.Core.Locations
         public int Entry = -1;
         public List<LocationArgId> Args = new List<LocationArgId>();
 
-        public bool Matches(LocationInfo location, int entry)
+        public bool Matches(LocationDefinition location, int entry)
         {
             if (location == null)
             {
@@ -36,7 +36,7 @@ namespace Larje.Core.Locations
             return true;
         }
 
-        private bool ContainsArg(LocationInfo location, LocationArgId arg)
+        private bool ContainsArg(LocationDefinition location, LocationArgId arg)
         {
             foreach (LocationArgId locationArg in location.Args)
             {

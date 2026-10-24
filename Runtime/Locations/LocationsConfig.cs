@@ -15,20 +15,20 @@ namespace Larje.Core.Locations
         [SerializeField] private float transitionDuration = 0.5f;
 
         [Header("Locations")]
-        [SerializeField] private List<LocationInfo> locations = new List<LocationInfo>();
+        [SerializeField] private List<LocationDefinition> locations = new List<LocationDefinition>();
 
         public LocationId DefaultLocation => defaultLocation;
         public int DefaultEntry => defaultEntry;
         public bool LoadOnInitialize => loadOnInitialize;
         public float TransitionDuration => transitionDuration;
-        public IReadOnlyList<LocationInfo> Locations => locations;
+        public IReadOnlyList<LocationDefinition> Locations => locations;
 
-        public LocationInfo Find(LocationId id)
+        public LocationDefinition Find(LocationId id)
         {
             return locations.Find(x => x.Id == id);
         }
 
-        public LocationInfo FindByKey(string key)
+        public LocationDefinition FindByKey(string key)
         {
             return locations.Find(x => x.Id != null && x.Id.Key == key);
         }
@@ -45,7 +45,7 @@ namespace Larje.Core.Locations
                 problems.Add("Default location is missing or not configured");
             }
 
-            foreach (LocationInfo location in locations)
+            foreach (LocationDefinition location in locations)
             {
                 if (location.Id == null)
                 {

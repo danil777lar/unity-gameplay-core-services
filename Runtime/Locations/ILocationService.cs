@@ -6,7 +6,7 @@ namespace Larje.Core.Locations
 {
     public interface ILocationService
     {
-        LocationInfo Current { get; }
+        LocationDefinition Current { get; }
         int CurrentEntry { get; }
         bool IsLoaded { get; }
         float Transition { get; }
@@ -14,8 +14,8 @@ namespace Larje.Core.Locations
 
         event Action Exiting;
         event Action LoadStarted;
-        event Action<LocationInfo, int> Loaded;
-        event Action<LocationInfo, int> Entered;
+        event Action<LocationDefinition, int> Loaded;
+        event Action<LocationDefinition, int> Entered;
 
         UniTask LoadAsync(LocationId location, int entry = 0, CancellationToken cancellationToken = default);
         UniTask QuitToMenuAsync(CancellationToken cancellationToken = default);

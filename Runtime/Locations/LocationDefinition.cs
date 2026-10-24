@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Larje.Core.Locations
 {
     [Serializable]
-    public sealed class LocationInfo
+    public sealed class LocationDefinition
     {
         [SerializeField, HideInInspector] private string inspectorName;
 

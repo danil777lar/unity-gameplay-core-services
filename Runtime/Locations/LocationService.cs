@@ -27,7 +27,7 @@ namespace Larje.Core.Locations
         private readonly List<ILocationEntry> _entries = new List<ILocationEntry>();
         private readonly List<Callback> _callbacks = new List<Callback>();
 
-        public LocationInfo Current => _config.FindByKey(Data.Location);
+        public LocationDefinition Current => _config.FindByKey(Data.Location);
         public int CurrentEntry => Data.Entry;
         public bool IsLoaded => _isLoaded;
         public float Transition => _transition;
@@ -35,8 +35,8 @@ namespace Larje.Core.Locations
 
         public event Action Exiting;
         public event Action LoadStarted;
-        public event Action<LocationInfo, int> Loaded;
-        public event Action<LocationInfo, int> Entered;
+        public event Action<LocationDefinition, int> Loaded;
+        public event Action<LocationDefinition, int> Entered;
 
         private LocationSaveData Data => _saves.Get<LocationSaveData>();
 
@@ -68,7 +68,7 @@ namespace Larje.Core.Locations
 
         public async UniTask LoadAsync(LocationId location, int entry = 0, CancellationToken cancellationToken = default)
         {
-            LocationInfo info = _config.Find(location);
+            LocationDefinition info = _config.Find(location);
             if (info == null || _isTransitioning)
             {
                 Debug.LogWarning($"LocationService: cannot load '{location}'");
@@ -160,7 +160,7 @@ namespace Larje.Core.Locations
 
         public string GetKeyPrefix()
         {
-            LocationInfo current = Current;
+            LocationDefinition current = Current;
             if (current == null)
             {
                 return string.Empty;
@@ -197,7 +197,7 @@ namespace Larje.Core.Locations
                 Data.Entry = _config.DefaultEntry;
             }
 
-            LocationInfo current = Current;
+            LocationDefinition current = Current;
             if (current != null)
             {
                 LoadAsync(current.Id, Data.Entry, _lifetime.Token).Forget();
@@ -217,7 +217,7 @@ namespace Larje.Core.Locations
                 _owner = owner;
             }
 
-            public void TryInvoke(LocationInfo location, int entry)
+            public void TryInvoke(LocationDefinition location, int entry)
             {
                 if (_filter.Matches(location, entry))
                 {
