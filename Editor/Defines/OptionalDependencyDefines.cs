@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Build;
@@ -8,9 +9,9 @@ using UnityEditor.Compilation;
 namespace Larje.Core.Editor.Defines
 {
     [InitializeOnLoad]
-    internal static class OptionalDependencyDefines
+    public static class OptionalDependencyDefines
     {
-        private static readonly Dependency[] s_dependencies =
+        private static readonly List<Dependency> s_dependencies = new List<Dependency>
         {
             new Dependency("Zenject", "LARJE_ZENJECT")
         };
@@ -28,11 +29,23 @@ namespace Larje.Core.Editor.Defines
             EditorApplication.delayCall += Sync;
         }
 
+        public static void Register(string assemblyName, string define)
+        {
+            if (!s_dependencies.Exists(x => x.AssemblyName == assemblyName && x.Define == define))
+            {
+                s_dependencies.Add(new Dependency(assemblyName, define));
+            }
+        }
+
         [MenuItem("Tools/Larje/Sync Optional Dependency Defines")]
         private static void Sync()
         {
             HashSet<string> assemblies = new HashSet<string>(
                 CompilationPipeline.GetAssemblies(AssembliesType.PlayerWithoutTestAssemblies).Select(x => x.name));
+            foreach (string path in CompilationPipeline.GetPrecompiledAssemblyPaths(CompilationPipeline.PrecompiledAssemblySources.UserAssembly))
+            {
+                assemblies.Add(Path.GetFileNameWithoutExtension(path));
+            }
 
             foreach (NamedBuildTarget target in s_targets)
             {
@@ -49,19 +62,19 @@ namespace Larje.Core.Editor.Defines
                 .ToList();
 
             bool changed = false;
-            foreach (Dependency dependency in s_dependencies)
+            foreach (string define in s_dependencies.Select(x => x.Define).Distinct())
             {
-                bool present = assemblies.Contains(dependency.AssemblyName);
-                bool defined = symbols.Contains(dependency.Define);
+                bool present = s_dependencies.Exists(x => x.Define == define && assemblies.Contains(x.AssemblyName));
+                bool defined = symbols.Contains(define);
 
                 if (present && !defined)
                 {
-                    symbols.Add(dependency.Define);
+                    symbols.Add(define);
                     changed = true;
                 }
                 else if (!present && defined)
                 {
-                    symbols.Remove(dependency.Define);
+                    symbols.Remove(define);
                     changed = true;
                 }
             }

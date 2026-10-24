@@ -7,7 +7,7 @@ Instructions for coding agents working on this package.
 - `Runtime/`: `Larje.Core`, with one folder per feature (Saves, Events, GameFlow, UI, Audio, Input, Economy, Levels, Locations, Localization, Tasks, Monetization, Debugging, Foundation).
 - `Runtime/Addressables/`: `Larje.Core.Addressables` (`LARJE_ADDRESSABLES`).
 - `Zenject/`: `Larje.Core.Zenject`, which contains `LarjeCoreInstaller`, `LarjeContainerExtensions` (`BindLarje*`) and `LarjeInitializer`.
-- `Editor/`: inspectors and tools. `Editor/AI/` holds the MCP tools. `Editor/Defines/` holds the optional-dependency define sync.
+- `Editor/`: inspectors and tools. `Editor/AI/` holds the MCP tools. `Editor/Defines/` holds the optional-dependency define sync; provider packages register their SDK assemblies through `OptionalDependencyDefines.Register`, keep it dependency-free.
 - `Tests/Editor`, `Tests/Zenject`: EditMode tests.
 
 ## When adding a service

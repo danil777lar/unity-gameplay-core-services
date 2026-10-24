@@ -30,7 +30,7 @@ Requires Unity 6000.3+, Input System, uGUI and Newtonsoft Json. These are resolv
 | `Larje.Core.Zenject` | `Zenject` | `com.larje.zenject` or an Asset Store Zenject is present (`LARJE_ZENJECT`) |
 | `Larje.Core.Editor` | `Editor` | Editor |
 | `Larje.Core.AI.Editor` | `Editor/AI` | `com.unity.ai.assistant` is installed (`LARJE_UNITY_AI`) |
-| `Larje.Core.Defines.Editor` | `Editor/Defines` | Editor; adds or removes `LARJE_ZENJECT` when Zenject is imported into `Assets` |
+| `Larje.Core.Defines.Editor` | `Editor/Defines` | Editor; adds or removes `LARJE_ZENJECT` when Zenject is imported into `Assets`, and the SDK defines that provider packages register with `OptionalDependencyDefines.Register(assemblyName, define)` (asmdef or precompiled DLL names) |
 
 ## Services
 
@@ -54,7 +54,7 @@ Requires Unity 6000.3+, Input System, uGUI and Newtonsoft Json. These are resolv
 
 Ids such as `CurrencyId`, `SoundId`, `UIScreenId`, `GameStateId`, `LocationId` and `TriggerId` are ScriptableObject assets, not generated enums. Save data is split into sections, so each feature owns its own data type.
 
-Real ad, purchase and analytics SDK providers are not part of this package. Implement `IAdsService` / `IPurchasesService` / `IAnalyticsService`, or derive from `AdsServiceBase` / `PurchasesServiceBase`, and bind your implementation instead of the simulated one.
+Real SDK providers live in separate packages: `com.larje.ads-admob`, `com.larje.ads-unity`, `com.larje.ads-telegram` (Adsgram), `com.larje.analytics-firebase` and `com.larje.iap-unity`. Each ships a Zenject installer that calls `BindLarjeAdsProvider<T>()`, `BindLarjeAnalyticsProvider<T>()` or `BindLarjePurchasesProvider<T>(config)`. These replace the simulated service whether they run before or after `LarjeCoreInstaller`, because `BindLarjeSimulatedMonetization` skips contracts that are already bound. For a custom provider implement the interface or derive from `AdsServiceBase` / `PurchasesServiceBase` and bind it the same way.
 
 ## Lifecycle
 
@@ -65,7 +65,7 @@ Real ad, purchase and analytics SDK providers are not part of this package. Impl
 ## With Zenject
 
 1. Create `Larje/Core/Zenject/Core Installer` (`LarjeCoreInstaller`), assign the configs you use and add it to the `ProjectContext` scriptable object installers. Empty slots are skipped.
-2. Or call the container extensions from your own installer: `BindLarjeInfrastructure`, `BindLarjeSaves`, `BindLarjeGameFlow`, `BindLarjeTimeScale`, `BindLarjeInput`, `BindLarjeAudio`, `BindLarjeLocalization`, `BindLarjeEconomy`, `BindLarjeDailyTasks`, `BindLarjeSimulatedMonetization`, `BindLarjeDiscountQueue`, `BindLarjeLevels` / `BindLarjeAddressableLevels`, `BindLarjeLocations`, `BindLarjeLevelObjectKeys`, `BindLarjeUI`, `BindLarjeDebugConsole`.
+2. Or call the container extensions from your own installer: `BindLarjeInfrastructure`, `BindLarjeSaves`, `BindLarjeGameFlow`, `BindLarjeTimeScale`, `BindLarjeInput`, `BindLarjeAudio`, `BindLarjeLocalization`, `BindLarjeEconomy`, `BindLarjeDailyTasks`, `BindLarjeSimulatedMonetization`, `BindLarjeAdsProvider` / `BindLarjeAnalyticsProvider` / `BindLarjePurchasesProvider`, `BindLarjeDiscountQueue`, `BindLarjeLevels` / `BindLarjeAddressableLevels`, `BindLarjeLocations`, `BindLarjeLevelObjectKeys`, `BindLarjeUI`, `BindLarjeDebugConsole`.
 3. `BindLarjeInfrastructure` registers `LarjeInitializer`. Inject `ILarjeReady` and `await WaitAsync()` before using services that initialize asynchronously.
 
 Zenject injects scene objects before their `Awake`. Component `Construct` methods must not rely on fields set in `Awake`.

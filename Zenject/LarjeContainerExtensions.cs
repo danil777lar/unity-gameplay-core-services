@@ -113,15 +113,60 @@ namespace Larje.Core.Zenject
 
         public static void BindLarjeSimulatedMonetization(this DiContainer container, PurchasesConfig purchases)
         {
-            container.BindInterfacesAndSelfTo<SimulatedAdsService>().AsSingle();
-            container.BindInterfacesAndSelfTo<LogAnalyticsService>().AsSingle();
-            if (purchases != null)
+            if (!container.HasBinding<IAdsService>())
             {
-                container.BindInstance(purchases);
-                container.BindInterfacesAndSelfTo<SimulatedPurchasesService>().AsSingle();
+                container.BindInterfacesAndSelfTo<SimulatedAdsService>().AsSingle();
             }
 
-            container.BindInterfacesTo<MonetizationDebugCommands>().AsSingle();
+            if (!container.HasBinding<IAnalyticsService>())
+            {
+                container.BindInterfacesAndSelfTo<LogAnalyticsService>().AsSingle();
+            }
+
+            if (purchases != null)
+            {
+                if (!container.HasBinding<PurchasesConfig>())
+                {
+                    container.BindInstance(purchases);
+                }
+
+                if (!container.HasBinding<IPurchasesService>())
+                {
+                    container.BindInterfacesAndSelfTo<SimulatedPurchasesService>().AsSingle();
+                }
+            }
+
+            if (!container.HasBinding<MonetizationDebugCommands>())
+            {
+                container.BindInterfacesAndSelfTo<MonetizationDebugCommands>().AsSingle();
+            }
+        }
+
+        public static void BindLarjeAdsProvider<TService>(this DiContainer container) where TService : IAdsService
+        {
+            container.Unbind<IAdsService>();
+            container.BindInterfacesAndSelfTo<TService>().AsSingle();
+            if (!container.HasBinding<MonetizationDebugCommands>())
+            {
+                container.BindInterfacesAndSelfTo<MonetizationDebugCommands>().AsSingle();
+            }
+        }
+
+        public static void BindLarjeAnalyticsProvider<TService>(this DiContainer container) where TService : IAnalyticsService
+        {
+            container.Unbind<IAnalyticsService>();
+            container.BindInterfacesAndSelfTo<TService>().AsSingle();
+        }
+
+        public static void BindLarjePurchasesProvider<TService>(this DiContainer container, PurchasesConfig purchases) where TService : IPurchasesService
+        {
+            container.Unbind<IPurchasesService>();
+            if (purchases != null && !container.HasBinding<PurchasesConfig>())
+            {
+                container.BindInstance(purchases);
+            }
+
+            container.BindInterfacesAndSelfTo<TService>().AsSingle();
         }
 
         public static void BindLarjeDiscountQueue(this DiContainer container, DiscountQueueConfig config)
