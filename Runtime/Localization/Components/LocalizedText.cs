@@ -11,6 +11,7 @@ namespace Larje.Core.Localization
         [SerializeField] private string prefix;
         [SerializeField] private string suffix;
 
+        private bool _subscribed;
         private TMP_Text _text;
         private ILocalizationService _localization;
 
@@ -24,49 +25,60 @@ namespace Larje.Core.Localization
             }
         }
 
+        private TMP_Text Text
+        {
+            get
+            {
+                if (_text == null)
+                {
+                    _text = GetComponent<TMP_Text>();
+                }
+
+                return _text;
+            }
+        }
+
 #if LARJE_ZENJECT
         [Zenject.Inject]
 #endif
         public void Construct(ILocalizationService localization)
         {
             _localization = localization;
-            if (isActiveAndEnabled)
-            {
-                _localization.Changed += Refresh;
-                Refresh();
-            }
-        }
-
-        private void Awake()
-        {
-            _text = GetComponent<TMP_Text>();
+            Subscribe();
         }
 
         private void OnEnable()
         {
-            if (_localization != null)
-            {
-                _localization.Changed += Refresh;
-                Refresh();
-            }
+            Subscribe();
         }
 
         private void OnDisable()
         {
-            if (_localization != null)
+            if (_subscribed)
             {
                 _localization.Changed -= Refresh;
+                _subscribed = false;
             }
         }
 
-        private void Refresh()
+        private void Subscribe()
         {
-            if (_text == null || _localization == null)
+            if (_subscribed || _localization == null || !isActiveAndEnabled)
             {
                 return;
             }
 
-            _text.text = prefix + _localization.Get(key) + suffix;
+            _localization.Changed += Refresh;
+            _subscribed = true;
+            Refresh();
+        }
+
+        private void Refresh()
+        {
+            if (_localization != null)
+            {
+                Text.text = prefix + _localization.Get(key) + suffix;
+            }
         }
     }
 }

@@ -1,0 +1,35 @@
+{
+    "name": "Larje.Core.Zenject.Tests",
+    "rootNamespace": "Larje.Core.Zenject.Tests",
+    "references": [
+        "Larje.Core",
+        "Larje.Core.Zenject",
+        "UniTask",
+        "Zenject",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS",
+        "LARJE_ZENJECT"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.larje.extenject",
+            "expression": "9.0.0",
+            "define": "LARJE_ZENJECT"
+        }
+    ],
+    "noEngineReferences": false
+}

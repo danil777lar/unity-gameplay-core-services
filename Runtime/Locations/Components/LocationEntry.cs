@@ -6,6 +6,7 @@ namespace Larje.Core.Locations
     {
         [SerializeField] private int id;
 
+        private bool _registered;
         private ILocationService _locations;
 
         public int Id => id;
@@ -18,25 +19,29 @@ namespace Larje.Core.Locations
         public void Construct(ILocationService locations)
         {
             _locations = locations;
-            if (isActiveAndEnabled)
-            {
-                _locations.AddEntry(this);
-            }
+            Register();
         }
 
         private void OnEnable()
         {
-            if (_locations != null)
-            {
-                _locations.AddEntry(this);
-            }
+            Register();
         }
 
         private void OnDisable()
         {
-            if (_locations != null)
+            if (_registered)
             {
                 _locations.RemoveEntry(this);
+                _registered = false;
+            }
+        }
+
+        private void Register()
+        {
+            if (!_registered && _locations != null && isActiveAndEnabled)
+            {
+                _locations.AddEntry(this);
+                _registered = true;
             }
         }
 

@@ -1,0 +1,30 @@
+{
+    "name": "Larje.Core.Zenject",
+    "rootNamespace": "Larje.Core.Zenject",
+    "references": [
+        "Larje.Core",
+        "Larje.Core.Addressables",
+        "UniTask",
+        "Zenject"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": ["LARJE_ZENJECT"],
+    "versionDefines": [
+        {
+            "name": "com.larje.extenject",
+            "expression": "9.0.0",
+            "define": "LARJE_ZENJECT"
+        },
+        {
+            "name": "com.unity.addressables",
+            "expression": "1.21.0",
+            "define": "LARJE_ADDRESSABLES"
+        }
+    ],
+    "noEngineReferences": false
+}
