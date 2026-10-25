@@ -31,7 +31,7 @@ Requires Unity 6000.3+, Input System, uGUI and Newtonsoft Json. These are resolv
 | `Larje.Core.Addressables` | `Runtime/Addressables` | `com.unity.addressables` is installed (`LARJE_ADDRESSABLES`) |
 | `Larje.Core.Zenject` | `Zenject` | `com.larje.zenject` or an Asset Store Zenject is present (`LARJE_ZENJECT`) |
 | `Larje.Core.Editor` | `Editor` | Editor |
-| `Larje.Core.AI.Editor` | `Editor/AI` | `com.unity.ai.assistant` is installed (`LARJE_UNITY_AI`) |
+| `Larje.Core.Cli.Editor` | `Editor/Cli` | `com.unity.pipeline` 0.9.1+ is installed (`LARJE_PIPELINE`) |
 | `Larje.Core.Defines.Editor` | `Editor/Defines` | Editor; adds or removes `LARJE_ZENJECT` when Zenject is imported into `Assets`, and the SDK defines that provider packages register with `OptionalDependencyDefines.Register(assemblyName, define)` (asmdef or precompiled DLL names) |
 
 ## Services
@@ -75,19 +75,19 @@ Zenject injects scene objects before their `Awake`. Component `Construct` method
 
 Construct the services yourself, call `Initialize` / `InitializeAsync` in that order, and use `DefaultObjectInjector` as `IObjectInjector`. Nothing in `Larje.Core` depends on a container.
 
-## Unity AI (MCP) tools
+## Unity CLI commands
 
-These are available when `com.unity.ai.assistant` is installed:
+With `com.unity.pipeline` in the project (`unity pipeline install`), a running editor (GUI or headless batch mode) exposes these commands to the [Unity CLI](https://docs.unity.com/en-us/unity-cli). Run them as `unity command <group> <name> [--arg value]`; JSON arrays and objects are passed as single-quoted JSON (`--args '["a","b"]'`). `unity command larje` lists them with their parameters.
 
-| Tool | Purpose |
+| Command | Purpose |
 |---|---|
-| `Larje.ListConfigs` | List Larje config assets in the project |
-| `Larje.ValidateProject` | Validate configs and ids: missing references, duplicate keys, broken levels, sounds without clips |
-| `Larje.ListIds` / `Larje.CreateId` | List or create id assets |
-| `Larje.ReadSave` / `Larje.WriteSaveSection` | Read or replace save sections on disk outside Play Mode |
-| `Larje.ListDebugCommands` / `Larje.RunDebugCommand` | Inspect and run debug commands in Play Mode |
-| `Larje.PreviewLocationArgs` | Preview location argument activators in the open scene |
-| `Larje.RenderPrefabIcons` | Render PNG icons for prefabs |
+| `larje validate` | Validate configs and ids: missing references, duplicate keys, broken levels, sounds without clips |
+| `larje.configs list [--type]` | List Larje config assets in the project |
+| `larje.ids list [--type]` / `larje.ids create --type --name [--folder]` | List or create id assets |
+| `larje.save read [--key --scope --slot]` / `larje.save write --key (--json \| --file)` | Read or replace save sections on disk outside Play Mode |
+| `larje.debug list [--group]` / `larje.debug run --name [--args '{"param":"value"}']` | Inspect and run debug commands in Play Mode |
+| `larje.scene preview_location_args [--args]` | Preview location argument activators in the open scene |
+| `larje.assets render_prefab_icons --prefabs [--size --output_folder]` | Render PNG icons for prefabs |
 
 ## Tests
 

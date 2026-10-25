@@ -1,0 +1,24 @@
+{
+    "name": "Larje.Core.Cli.Editor",
+    "rootNamespace": "Larje.Core.Editor.Cli",
+    "references": [
+        "Larje.Core",
+        "Larje.Core.Editor",
+        "Unity.Pipeline.Attributes"
+    ],
+    "includePlatforms": ["Editor"],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": ["LARJE_PIPELINE"],
+    "versionDefines": [
+        {
+            "name": "com.unity.pipeline",
+            "expression": "0.9.1-exp.1",
+            "define": "LARJE_PIPELINE"
+        }
+    ],
+    "noEngineReferences": false
+}

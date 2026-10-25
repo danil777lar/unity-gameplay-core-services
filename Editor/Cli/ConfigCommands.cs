@@ -1,35 +1,37 @@
 using System;
 using System.Collections.Generic;
 using Larje.Core.Ids;
-using Unity.AI.MCP.Editor.Helpers;
-using Unity.AI.MCP.Editor.ToolRegistry;
+using Unity.Pipeline.Commands;
 using UnityEditor;
 using UnityEngine;
 
-namespace Larje.Core.Editor.AI
+namespace Larje.Core.Editor.Cli
 {
-    public static class ConfigTools
+    public static class ConfigCommands
     {
-        private const string LIST_DESCRIPTION = "Lists Larje ScriptableObject configs in the project (UIConfig, SoundConfig, CurrencyConfig, SaveConfig, LocationsConfig, LevelsConfig, InputConfig and others from Larje packages) with asset paths. Use Unity asset tools to edit them.";
-        private const string VALIDATE_DESCRIPTION = "Validates all Larje configs and id assets: missing required references, unconfigured ids, duplicate id keys, level prefabs without LevelProcessor, sounds without clips. Returns a list of problems per asset.";
+        private const string GROUP = "larje.configs";
+        private const string ROOT_GROUP = "larje";
+        private const string LIST_DESCRIPTION = "Lists Larje ScriptableObject configs in the project (UIConfig, SoundConfig, CurrencyConfig, SaveConfig, LocationsConfig, LevelsConfig, InputConfig and others from Larje packages) with asset paths.";
+        private const string VALIDATE_DESCRIPTION = "Validates all Larje configs and id assets: missing required references, unconfigured ids, duplicate id keys, level prefabs without LevelProcessor, sounds without clips. Returns the problem count and the problems per asset.";
 
-        [McpTool("Larje.ListConfigs", LIST_DESCRIPTION, "List Larje Configs", EnabledByDefault = true, Groups = new[] { "larje", "larje-assets" })]
-        public static object List(ListParams parameters)
+        [CliGroupCommand(GROUP, LIST_DESCRIPTION, Tags = new[] { "larje", "assets" })]
+        public static object List(
+            [CliArg("type", "Config type name filter, e.g. UIConfig")] string type = null)
         {
             List<object> configs = new List<object>();
             foreach (ScriptableObject config in FindConfigs())
             {
-                string type = config.GetType().Name;
-                if (string.IsNullOrEmpty(parameters.Type) || type == parameters.Type)
+                string configType = config.GetType().Name;
+                if (string.IsNullOrEmpty(type) || configType == type)
                 {
-                    configs.Add(new { type, name = config.name, path = AssetDatabase.GetAssetPath(config) });
+                    configs.Add(new { type = configType, name = config.name, path = AssetDatabase.GetAssetPath(config) });
                 }
             }
 
-            return Response.Success($"{configs.Count} configs", configs);
+            return configs;
         }
 
-        [McpTool("Larje.ValidateProject", VALIDATE_DESCRIPTION, "Validate Larje Project", EnabledByDefault = true, Groups = new[] { "larje", "larje-assets" })]
+        [CliGroupCommand(ROOT_GROUP, VALIDATE_DESCRIPTION, Tags = new[] { "larje", "assets" })]
         public static object Validate()
         {
             List<object> reports = new List<object>();
@@ -54,7 +56,7 @@ namespace Larje.Core.Editor.AI
                 reports.Add(new { asset = "ids", problems = new[] { duplicate } });
             }
 
-            return Response.Success(total == 0 ? "No problems found" : $"{total} problems", reports);
+            return new { problems = total, reports };
         }
 
         private static IEnumerable<ScriptableObject> FindConfigs()
@@ -91,12 +93,6 @@ namespace Larje.Core.Editor.AI
         private static bool IsLarjeType(Type type)
         {
             return type.Namespace != null && type.Namespace.StartsWith("Larje", StringComparison.Ordinal);
-        }
-
-        public sealed class ListParams
-        {
-            [McpDescription("Optional config type name filter, e.g. UIConfig")]
-            public string Type { get; set; }
         }
     }
 }
