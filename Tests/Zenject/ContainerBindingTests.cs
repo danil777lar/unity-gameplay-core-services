@@ -4,7 +4,6 @@ using Larje.Core.Economy;
 using Larje.Core.Events;
 using Larje.Core.GameFlow;
 using Larje.Core.Saves;
-using Larje.Core.UI;
 using NUnit.Framework;
 using UnityEngine;
 using Zenject;
@@ -71,32 +70,6 @@ namespace Larje.Core.Zenject.Tests
             Assert.IsNotNull(registry.Find("AddCurrency"));
             Assert.IsNotNull(registry.Find("Save"));
             Assert.IsNotNull(registry.Find("SetState"));
-        }
-
-        [Test]
-        public void ComponentsReceiveDependenciesThroughConstruct()
-        {
-            _container.Resolve<LarjeInitializer>().Initialize();
-            GameObject target = new GameObject("Counter", typeof(RectTransform));
-            target.AddComponent<TMPro.TextMeshProUGUI>();
-            CurrencyCounter counter = target.AddComponent<CurrencyCounter>();
-            try
-            {
-                _container.InjectGameObject(target);
-                _container.Resolve<ICurrencyService>().Set(counter.Currency, 0);
-                Assert.AreEqual(0, counter.GetCurrentAmount());
-                Assert.IsTrue(InjectedField(counter));
-            }
-            finally
-            {
-                Object.DestroyImmediate(target);
-            }
-        }
-
-        private bool InjectedField(CurrencyCounter counter)
-        {
-            System.Reflection.FieldInfo field = typeof(CurrencyCounter).GetField("_currency", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-            return field.GetValue(counter) != null;
         }
     }
 }

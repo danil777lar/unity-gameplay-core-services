@@ -10,7 +10,6 @@ using Larje.Core.Monetization;
 using Larje.Core.Saves;
 using Larje.Core.Tasks;
 using Larje.Core.TimeScale;
-using Larje.Core.UI;
 using UnityEngine;
 using Zenject;
 
@@ -33,7 +32,6 @@ namespace Larje.Core.Zenject
         [SerializeField] private PointerControlConfig pointerControl;
 
         [Header("Presentation")]
-        [SerializeField] private UIConfig ui;
         [SerializeField] private SoundConfig sound;
         [SerializeField] private GTableLocalizationConfig localization;
 
@@ -115,10 +113,6 @@ namespace Larje.Core.Zenject
             }
 
             Container.BindLarjeLevelObjectKeys();
-            if (ui != null)
-            {
-                Container.BindLarjeUI(ui);
-            }
 
             if (debugConsole != null)
             {

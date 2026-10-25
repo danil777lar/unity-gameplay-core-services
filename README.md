@@ -1,6 +1,8 @@
 # Larje Core
 
-`com.larje.core`: gameplay services and tools for Unity 6 projects. It covers saves, events, game states and scenes, levels and locations, UI, audio, input, economy, localization, tasks, monetization abstractions and a debug console.
+`com.larje.core`: gameplay services and tools for Unity 6 projects. It covers saves, events, game states and scenes, levels and locations, audio, input, economy, localization, tasks, monetization abstractions and a debug console.
+
+UI (screens, popups, toasts, UI animations and components) lives in the separate package `com.larje.ui` ([unity-ui-framework](https://github.com/danil777lar/unity-ui-framework)), which depends on this one.
 
 Services are plain C# classes with constructor injection. Long-running work uses UniTask and `CancellationToken` instead of `Update` and coroutines. Zenject is optional. When it is present, an installer binds everything for you.
 
@@ -47,12 +49,11 @@ Requires Unity 6000.3+, Input System, uGUI and Newtonsoft Json. These are resolv
 | Tasks | `ITasksService` | `DailyTasksService` | `DailyTasksConfig` |
 | Levels | `ILevelService` | `LevelService` (prefab or Addressables levels) | `LevelsConfig`, `PrefabLevelsConfig`, `AddressableLevelsConfig` |
 | Locations | `ILocationService` | `LocationService` | `LocationsConfig` |
-| UI | `IUIService` | `UIService` (screens, popups, animations, processors) | `UIConfig` |
 | Haptics | `IHapticService` | `HapticService` | — |
 | Monetization | `IAdsService`, `IPurchasesService`, `IAnalyticsService` | `SimulatedAdsService`, `SimulatedPurchasesService`, `LogAnalyticsService` | `PurchasesConfig`, `DiscountQueueConfig` |
 | Debug | `IDebugConsoleService`, `IDebugCommandRegistry` | `DebugConsoleService` | `DebugConsoleConfig` |
 
-Ids such as `CurrencyId`, `SoundId`, `UIScreenId`, `GameStateId`, `LocationId` and `TriggerId` are ScriptableObject assets, not generated enums. Save data is split into sections, so each feature owns its own data type.
+Ids such as `CurrencyId`, `SoundId`, `GameStateId`, `LocationId` and `TriggerId` are ScriptableObject assets, not generated enums. Save data is split into sections, so each feature owns its own data type.
 
 Real SDK providers live in separate packages: `com.larje.ads-admob`, `com.larje.ads-unity`, `com.larje.ads-telegram` (Adsgram), `com.larje.analytics-firebase` and `com.larje.iap-unity`. Each ships a Zenject installer that calls `BindLarjeAdsProvider<T>()`, `BindLarjeAnalyticsProvider<T>()` or `BindLarjePurchasesProvider<T>(config)`. These replace the simulated service whether they run before or after `LarjeCoreInstaller`, because `BindLarjeSimulatedMonetization` skips contracts that are already bound. For a custom provider implement the interface or derive from `AdsServiceBase` / `PurchasesServiceBase` and bind it the same way.
 
@@ -65,7 +66,7 @@ Real SDK providers live in separate packages: `com.larje.ads-admob`, `com.larje.
 ## With Zenject
 
 1. Create `Larje/Core/Zenject/Core Installer` (`LarjeCoreInstaller`), assign the configs you use and add it to the `ProjectContext` scriptable object installers. Empty slots are skipped.
-2. Or call the container extensions from your own installer: `BindLarjeInfrastructure`, `BindLarjeSaves`, `BindLarjeGameFlow`, `BindLarjeTimeScale`, `BindLarjeInput`, `BindLarjeAudio`, `BindLarjeLocalization`, `BindLarjeEconomy`, `BindLarjeDailyTasks`, `BindLarjeSimulatedMonetization`, `BindLarjeAdsProvider` / `BindLarjeAnalyticsProvider` / `BindLarjePurchasesProvider`, `BindLarjeDiscountQueue`, `BindLarjeLevels` / `BindLarjeAddressableLevels`, `BindLarjeLocations`, `BindLarjeLevelObjectKeys`, `BindLarjeUI`, `BindLarjeDebugConsole`.
+2. Or call the container extensions from your own installer: `BindLarjeInfrastructure`, `BindLarjeSaves`, `BindLarjeGameFlow`, `BindLarjeTimeScale`, `BindLarjeInput`, `BindLarjeAudio`, `BindLarjeLocalization`, `BindLarjeEconomy`, `BindLarjeDailyTasks`, `BindLarjeSimulatedMonetization`, `BindLarjeAdsProvider` / `BindLarjeAnalyticsProvider` / `BindLarjePurchasesProvider`, `BindLarjeDiscountQueue`, `BindLarjeLevels` / `BindLarjeAddressableLevels`, `BindLarjeLocations`, `BindLarjeLevelObjectKeys`, `BindLarjeDebugConsole`.
 3. `BindLarjeInfrastructure` registers `LarjeInitializer`. Inject `ILarjeReady` and `await WaitAsync()` before using services that initialize asynchronously.
 
 Zenject injects scene objects before their `Awake`. Component `Construct` methods must not rely on fields set in `Awake`.

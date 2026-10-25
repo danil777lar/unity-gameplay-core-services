@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Larje.Core.Tweening;
-using Larje.Core.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 

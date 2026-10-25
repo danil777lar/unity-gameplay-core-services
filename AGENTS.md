@@ -4,8 +4,9 @@ Instructions for coding agents working on this package.
 
 ## Package layout
 
-- `Runtime/`: `Larje.Core`, with one folder per feature (Saves, Events, GameFlow, UI, Audio, Input, Economy, Levels, Locations, Localization, Tasks, Monetization, Debugging, Foundation).
+- `Runtime/`: `Larje.Core`, with one folder per feature (Saves, Events, GameFlow, Audio, Input, Economy, Levels, Locations, Localization, Tasks, Monetization, Debugging, Foundation).
 - `Runtime/Addressables/`: `Larje.Core.Addressables` (`LARJE_ADDRESSABLES`).
+- UI is not here: it lives in `com.larje.ui` (`~/UnityPackages/unity-ui-framework`), which depends on core. Core must not reference it.
 - `Zenject/`: `Larje.Core.Zenject`, which contains `LarjeCoreInstaller`, `LarjeContainerExtensions` (`BindLarje*`) and `LarjeInitializer`.
 - `Editor/`: inspectors and tools. `Editor/AI/` holds the MCP tools. `Editor/Defines/` holds the optional-dependency define sync; provider packages register their SDK assemblies through `OptionalDependencyDefines.Register`, keep it dependency-free.
 - `Tests/Editor`, `Tests/Zenject`: EditMode tests.

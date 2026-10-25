@@ -13,7 +13,6 @@ using Larje.Core.Monetization;
 using Larje.Core.Saves;
 using Larje.Core.Tasks;
 using Larje.Core.TimeScale;
-using Larje.Core.UI;
 using Zenject;
 
 namespace Larje.Core.Zenject
@@ -200,13 +199,6 @@ namespace Larje.Core.Zenject
         public static void BindLarjeLevelObjectKeys(this DiContainer container)
         {
             container.Bind<ILevelObjectKeyProvider>().To<DefaultLevelObjectKeyProvider>().AsSingle().IfNotBound();
-        }
-
-        public static void BindLarjeUI(this DiContainer container, UIConfig config)
-        {
-            container.BindInstance(config);
-            container.BindInterfacesAndSelfTo<UIService>().AsSingle();
-            container.BindInterfacesTo<UIDebugCommands>().AsSingle();
         }
 
         public static void BindLarjeDebugConsole(this DiContainer container, DebugConsoleConfig config)
